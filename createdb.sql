@@ -1,7 +1,8 @@
 CREATE SCHEMA store;
 CREATE TABLE store.manufacturers (
     manufacturer_id SERIAL PRIMARY KEY,
-    manufacturer_name VARCHAR(100) NOT NULL
+    manufacturer_name VARCHAR(100) NOT NULL,
+    manufacturer_legal_entity VARCHAR(100) NOT NULL
 );
 
 COPY store.manufacturers(manufacturer_name)
@@ -22,6 +23,9 @@ CREATE TABLE store.products (
     manufacturer_id BIGINT  NOT NULL,
     product_id SERIAL PRIMARY KEY,
     product_name VARCHAR(255) NOT NULL,
+    product_picture_url VARCHAR(255) NOT NULL,
+    product_description VARCHAR(255) NOT NULL,
+    product_age_restriction INT NOT NULL,
     FOREIGN KEY (category_id) REFERENCES store.categories (category_id),
     FOREIGN KEY (manufacturer_id) REFERENCES store.manufacturers (manufacturer_id)
 );
@@ -32,7 +36,10 @@ DELIMITER ',' CSV HEADER;
 
 CREATE TABLE store.stores (
     store_id SERIAL PRIMARY KEY,
-    store_name VARCHAR(255) NOT NULL
+    store_name VARCHAR(255) NOT NULL,
+    store_country VARCHAR(255) NOT NULL,
+    store_city VARCHAR(255) NOT NULL,
+    store_address VARCHAR(255) NOT NULL
 );
 
 COPY store.stores(store_name)
@@ -42,7 +49,9 @@ DELIMITER ',' CSV HEADER;
 CREATE TABLE store.customers (
     customer_id SERIAL PRIMARY KEY,
     customer_fname VARCHAR(100) NOT NULL,
-    customer_lname VARCHAR(100) NOT NULL
+    customer_lname VARCHAR(100) NOT NULL,
+    customer_gender VARCHAR(100) NOT NULL,
+    customer_phone VARCHAR(100) NOT NULL
 );
 
 COPY store.customers(customer_fname, customer_lname)
@@ -61,6 +70,7 @@ FROM '/etc/postgresql/init-script/csv/price_change.csv'
 DELIMITER ',' CSV HEADER;
 
 CREATE TABLE store.deliveries (
+    delivery_id BIGINT NOT NULL PRIMARY KEY,
     store_id BIGINT NOT NULL,
     product_id BIGINT NOT NULL,
     delivery_date DATE NOT NULL,
@@ -78,6 +88,7 @@ CREATE TABLE store.purchases (
     customer_id BIGINT  NOT NULL,
     purchase_id SERIAL PRIMARY KEY,
     purchase_date DATE NOT NULL,
+    purchase_payment_type DATE NOT NULL,
     FOREIGN KEY (store_id) REFERENCES store.stores (store_id),
     FOREIGN KEY (customer_id) REFERENCES store.customers (customer_id)
 );
